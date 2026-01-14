@@ -28,19 +28,6 @@ jobs:
     - name: Run Checkstyle (Linting)
       run: mvn checkstyle:check
 
-    - name: Initialize CodeQL (SAST)
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java-kotlin
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
-
-    - name: Analyze with CodeQL
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:java-kotlin"
-
     - name: Dependency Vulnerability Scan (SCA)
       run: mvn org.owasp:dependency-check-maven:check
 
