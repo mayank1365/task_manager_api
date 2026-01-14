@@ -3,18 +3,16 @@ package com.example.taskmanager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * Main Spring Boot application class.
- */
+/** Main Spring Boot application class. */
 @SpringBootApplication
 public class TaskManagerApplication {
 
-    /**
-     * Main method to start the Spring Boot application.
-     *
-     * @param args command line arguments
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(TaskManagerApplication.class, args);
-    }
+  /**
+   * Main method to start the Spring Boot application.
+   *
+   * @param args command line arguments
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(TaskManagerApplication.class, args);
+  }
 }
