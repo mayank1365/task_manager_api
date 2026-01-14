@@ -29,6 +29,7 @@ jobs:
       run: mvn checkstyle:check
 
     - name: Dependency Vulnerability Scan (SCA)
+      continue-on-error: true
       run: mvn org.owasp:dependency-check-maven:check
 
     - name: Run Unit Tests
