@@ -1,7 +1,5 @@
 # Task Manager API
 
-![CI Pipeline](https://github.com/mayank1365/task-manager-api/workflows/CI%20Pipeline%20-%20DevSecOps/badge.svg)
-
 A production-ready Spring Boot REST API for task management, featuring a comprehensive **DevSecOps CI/CD pipeline** with automated security scanning, testing, and containerization.
 
 ## 📋 Table of Contents
@@ -59,10 +57,6 @@ Runtime Smoke Test
 Push to DockerHub ✓
 ```
 
-### Why This Order?
-
-> **"We place cheap checks like linting early and expensive checks like container scanning later to optimize feedback time and CI cost."**
-
 - **Linting first** - Fastest check, catches code style issues immediately
 - **SAST/SCA early** - Catches vulnerabilities before building artifacts
 - **Tests before build** - No point building if tests fail
@@ -82,18 +76,6 @@ Push to DockerHub ✓
 | **Deploy** | DockerHub | Publishes only trusted artifacts | Push failure |
 
 ## Security Tools
-
-### 🔍 CodeQL (SAST - Static Application Security Testing)
-
-**What it does:**
-- Analyzes source code for security vulnerabilities
-- Detects OWASP Top 10 issues (SQL injection, XSS, etc.)
-- Runs semantic code analysis
-
-**Why it matters:**
-- Catches vulnerabilities before runtime
-- Prevents security issues from reaching production
-- Automated security review on every commit
 
 ### 🛡️ OWASP Dependency Check (SCA - Software Composition Analysis)
 
@@ -150,7 +132,7 @@ Push to DockerHub ✓
 
 ```bash
 # Clone the repository
-git clone https://github.com/mayank1365/task-manager-api.git
+git clone https://github.com/mayank1365/task_manager_api.git
 cd task-manager-api
 
 # Build and run
@@ -431,29 +413,4 @@ java -jar target/task-manager-api-1.0.0.jar
 docker build -t task-manager-api .
 docker run -d -p 8080:8080 task-manager-api
 ```
-
-### Production Considerations
-
-- Use environment variables for configuration
-- Enable HTTPS/TLS
-- Add rate limiting
-- Implement proper logging
-- Use persistent storage (database)
-- Add monitoring (Prometheus/Grafana)
-
-## Contributing
-
-This is a demonstration project for DevSecOps practices. Feel free to use it as a template for your own projects.
-
-## License
-
-This project is for demonstration purposes.
-
-## Author
-
-Built for DevOps CI/CD and DevSecOps pipeline demonstration.
-
 ---
-
-**Pipeline Status:** ![CI Pipeline](https://github.com/mayank1365/task-manager-api/workflows/CI%20Pipeline%20-%20DevSecOps/badge.svg)
-
