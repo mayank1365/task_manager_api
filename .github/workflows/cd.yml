@@ -1,0 +1,64 @@
+name: CD Pipeline - Deployment & DAST
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline - DevSecOps"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  deploy-and-dast:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Minikube/Kind (Simulating K8s Cluster)
+        uses: helm/kind-action@v1.9.0
+        with:
+          cluster_name: task-manager-cluster
+
+      - name: Install envsubst
+        run: sudo apt-get install -y gettext-base
+
+      - name: Create K8s Image Pull Secret
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          kubectl create secret docker-registry regcred \
+            --docker-server=https://index.docker.io/v1/ \
+            --docker-username=$DOCKER_USERNAME \
+            --docker-password=$DOCKER_PASSWORD \
+            --docker-email=unused@example.com
+
+      - name: Deploy to Kubernetes
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          # Substitute environment variables in deployment.yaml
+          envsubst < k8s/deployment.yaml | kubectl apply -f -
+          kubectl apply -f k8s/service.yaml
+          
+          # Wait for deployment roll out
+          echo "Waiting for deployment to verify..."
+          kubectl rollout status deployment/task-manager-api --timeout=300s
+          
+          # Debug: show pods
+          kubectl get pods -o wide
+          kubectl get services
+
+      - name: Port Forward Service
+        run: |
+          # Forward local port 8080 to the service port 80
+          kubectl port-forward service/task-manager-api-service 8080:80 &
+          # Give it a moment to establish
+          sleep 5
+
+      - name: Run Dummy DAST Scan
+        run: |
+          chmod +x dast.sh
+          ./dast.sh http://localhost:8080
