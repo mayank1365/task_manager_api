@@ -61,7 +61,18 @@ Push to DockerHub ✓
 - **SAST/SCA early** - Catches vulnerabilities before building artifacts
 - **Tests before build** - No point building if tests fail
 - **Container scan late** - Most expensive, only run on valid builds
+- **Container scan late** - Most expensive, only run on valid builds
 - **Runtime test** - Final validation before deployment
+- **CD Deployment** - Deploys to Kubernetes (Kind) after successful CI
+- **DAST Scan** - Verifies running application health
+
+### CD Pipeline Stages
+
+| Stage | Tool | Purpose | Fail Condition |
+|-------|------|---------|----------------|
+| **Setup K8s** | Kind | Creates disposable Kubernetes cluster | Cluster creation failure |
+| **Deploy** | Kubectl | Deploys manifests to cluster | Deployment timeout/failure |
+| **DAST** | Custom Script | Verifies app accessibility and health | Endpoint check failure |
 
 ### Pipeline Stages Explained
 
@@ -267,7 +278,12 @@ curl http://localhost:8080/tasks
 task-manager-api/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                          # CI/CD Pipeline
+│       └── ci.yml                          # CI Pipeline
+│       └── cd.yml                          # CD Pipeline
+├── k8s/                                    # Kubernetes Manifests
+│   ├── deployment.yaml
+│   └── service.yaml
+├── dast.sh                                 # DAST Scan Script
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/taskmanager/
@@ -412,5 +428,18 @@ java -jar target/task-manager-api-1.0.0.jar
 ```bash
 docker build -t task-manager-api .
 docker run -d -p 8080:8080 task-manager-api
+```
+
+### Kubernetes Deployment (Kind)
+
+The project includes a CD pipeline that automatically deploys to a **Kind (Kubernetes in Docker)** cluster.
+
+**Manual Deployment to K8s:**
+```bash
+# Apply Manifests
+kubectl apply -f k8s/
+
+# Port Forward (to access locally)
+kubectl port-forward service/task-manager-api-service 8080:80
 ```
 ---
